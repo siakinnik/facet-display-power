@@ -1,0 +1,9 @@
+{
+  "id": "display-power",
+  "name": { "en": "Screen & camera", "ru": "Экран и камера" },
+  "version": "0.0.1-alpha",
+  "api": 1,
+  "exec": "display-power",
+  "capabilities": ["display.power", "camera"],
+  "tile": { "icon": "display" }
+}
