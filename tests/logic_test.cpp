@@ -69,7 +69,7 @@ static void test_settings_roundtrip() {
     bad["interval_s"] = 100000;
     bad["day_mode"] = 9;
     dp::Settings c = dp::Settings::from_json(bad);
-    CHECK(c.interval_s == 60);
+    CHECK(c.interval_s == 120);
     CHECK(c.day_mode == dp::Mode::AlwaysOn);
 }
 

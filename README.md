@@ -31,6 +31,10 @@ Defaults: always on during the day (07:00–23:00), camera at night.
   the same port. `by-id` is not used: webcams with an IR sensor expose both
   sensors under the same by-id name.
 - The camera is opened **only** during "Camera" periods; otherwise it is closed.
+  While open it is reserved (its stream buffers are allocated, so other
+  programs get "device busy"), but with a check interval of 5 s or more the
+  sensor is switched on only for each check (about a second) and off in
+  between: it stays cool and frees USB bandwidth for the camera's other sensor.
 - Once per interval (2 s by default) one fresh 320×240 frame is taken. Only
   brightness is used: it is scaled down to 80×60 and compared with the previous
   frame with auto-exposure compensation. Frames are never stored.

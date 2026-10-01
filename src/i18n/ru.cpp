@@ -64,9 +64,11 @@ const facet::i18n::Table& ru() {
         {"Touch", "Касание"},
         {"Screen after a touch", "Экран после касания"},
         {"The camera records and stores nothing: one frame per interval is analysed in memory for "
-         "motion only. The camera is switched on only during “Camera” periods.",
+         "motion only. The camera is used only during “Camera” periods; with checks every 5 s or "
+         "less often it is switched on for about a second per check.",
          "Камера ничего не снимает и не сохраняет: кадр раз в интервал анализируется в памяти "
-         "только на наличие движения. Камера включается лишь в периоды режима «По камере»."},
+         "только на наличие движения. Камера используется лишь в периоды режима «По камере»; при "
+         "проверке раз в 5 с и реже она включается примерно на секунду на каждую проверку."},
 
         // Camera errors (camera_v4l2.cpp, watcher.cpp)
         {"no camera found", "камера не найдена"},

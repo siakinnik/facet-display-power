@@ -164,25 +164,45 @@ bool Camera::open(const std::string& id, facet::i18n::Text& error) {
             return false;
         }
         buffers_.push_back({p, b.length});
+    }
+    // The buffers are allocated now, so the device is ours: other programs
+    // get EBUSY when they try to stream. The sensor only runs after start().
+    return true;
+}
+
+bool Camera::start(facet::i18n::Text& error) {
+    if (fd_ < 0) {
+        error = "camera is not open";
+        return false;
+    }
+    if (streaming_) return true;
+    // STREAMOFF hands every buffer back to us; queue them all again.
+    for (uint32_t i = 0; i < buffers_.size(); ++i) {
+        v4l2_buffer b{};
+        b.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        b.memory = V4L2_MEMORY_MMAP;
+        b.index = i;
         xioctl(fd_, VIDIOC_QBUF, &b);
     }
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if (xioctl(fd_, VIDIOC_STREAMON, &type) < 0) {
         error = {"cannot start streaming: {}", {std::strerror(errno)}};
-        close();
         return false;
     }
     streaming_ = true;
     return true;
 }
 
+void Camera::stop() {
+    if (fd_ < 0 || !streaming_) return;
+    v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    xioctl(fd_, VIDIOC_STREAMOFF, &type);
+    streaming_ = false;
+}
+
 void Camera::close() {
     if (fd_ < 0) return;
-    if (streaming_) {
-        v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        xioctl(fd_, VIDIOC_STREAMOFF, &type);
-        streaming_ = false;
-    }
+    stop();
     for (auto& b : buffers_) munmap(b.ptr, b.len);
     buffers_.clear();
     ::close(fd_);
@@ -195,12 +215,12 @@ void Camera::warm_up(double seconds) {
     int w, h;
     facet::i18n::Text err;
     int frames = std::max(1, int(seconds * 5));
-    for (int i = 0; i < frames && is_open(); ++i)
+    for (int i = 0; i < frames && streaming_; ++i)
         if (!grab(tmp, w, h, err)) break;
 }
 
 bool Camera::grab(std::vector<uint8_t>& out, int& w, int& h, facet::i18n::Text& error) {
-    if (fd_ < 0) {
+    if (fd_ < 0 || !streaming_) {
         error = "camera is not open";
         return false;
     }

@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 
     dp::Camera cam;
     facet::i18n::Text err;  // printed untranslated (English)
-    if (!cam.open(id, err)) {
+    if (!cam.open(id, err) || !cam.start(err)) {
         std::fprintf(stderr, "%s: %s\n", id.c_str(), facet::i18n::format(err.key, err.args).c_str());
         return 1;
     }

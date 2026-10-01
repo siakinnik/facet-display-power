@@ -29,7 +29,7 @@ Settings Settings::from_json(const Json& j) {
     };
     s.enabled = j["enabled"].as_bool(d.enabled);
     s.camera = j["camera"].as_string(d.camera);
-    s.interval_s = std::clamp(j["interval_s"].as_int(d.interval_s), 1, 60);
+    s.interval_s = std::clamp(j["interval_s"].as_int(d.interval_s), 1, 120);
     s.sensitivity = std::clamp(j["sensitivity"].as_int(d.sensitivity), 0, 2);
     s.presence_hold_s = std::clamp(j["presence_hold_s"].as_int(d.presence_hold_s), 5, 3600);
     s.touch_hold_s = std::clamp(j["touch_hold_s"].as_int(d.touch_hold_s), 5, 3600);

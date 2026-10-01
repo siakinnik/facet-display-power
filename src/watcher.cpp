@@ -6,6 +6,11 @@
 
 namespace dp {
 
+namespace {
+// From this check interval on, the sensor is switched off between checks.
+constexpr int kPowerDownFrom = 5;
+}  // namespace
+
 double now_s() {
     using namespace std::chrono;
     return duration<double>(steady_clock::now().time_since_epoch()).count();
@@ -79,20 +84,30 @@ void Watcher::run() {
             if (id.empty()) {
                 error = "no camera found";
             } else if (cam.open(id, error)) {
-                facet::sdk::Plugin::log("camera opened: %s (%s)", cam.name().c_str(), id.c_str());
-                cam.warm_up(1.5);
+                facet::sdk::Plugin::log("camera reserved: %s (%s)", cam.name().c_str(), id.c_str());
                 detector.reset();
             }
             if (!cam.is_open()) retry_at = now_s() + 10;
         }
 
+        // The device stays reserved while checks are needed, but with longer
+        // intervals the sensor is only powered for the check itself (about a
+        // second for auto-exposure plus one frame), which keeps it cool and
+        // frees USB bandwidth for the camera's other sensor.
         PresenceResult res;
         bool grabbed = false;
         if (cam.is_open()) {
+            bool keep_streaming = cfg.interval_s < kPowerDownFrom;
+            bool started = cam.streaming();
+            if (!started && cam.start(error)) {
+                started = true;
+                cam.warm_up(keep_streaming ? 1.5 : 1.0);
+            }
             int w = 0, h = 0;
-            if (cam.grab(frame, w, h, error)) {
+            if (started && cam.grab(frame, w, h, error)) {
                 res = detector.feed(frame.data(), w, h, w, cfg.sensitivity);
                 grabbed = true;
+                if (!keep_streaming) cam.stop();
             } else {
                 facet::sdk::Plugin::log("camera error: %s", facet::i18n::format(error.key, error.args).c_str());
                 cam.close();

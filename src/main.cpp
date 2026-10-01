@@ -156,7 +156,7 @@ private:
             cam_index = int(cams.size()) - 1;
         }
         ui.select("camera", tr("Camera"), cams, cam_index);
-        ui.stepper("interval", tr("Check every"), s.interval_s, 1, 30, 1, sec);
+        ui.stepper("interval", tr("Check every"), s.interval_s, 1, 120, 1, sec);
         ui.select("sensitivity", tr("Sensitivity"), options(kSensitivity), s.sensitivity);
         ui.stepper("presence_hold", tr("Keep on after leaving"), s.presence_hold_s, 10, 900, 10, sec);
         ui.button("rescan", tr("Find cameras again"));
@@ -164,7 +164,8 @@ private:
         ui.section(tr("Touch"));
         ui.stepper("touch_hold", tr("Screen after a touch"), s.touch_hold_s, 10, 900, 10, sec);
         ui.note(tr("The camera records and stores nothing: one frame per interval is analysed in memory for "
-                   "motion only. The camera is switched on only during “Camera” periods."));
+                   "motion only. The camera is used only during “Camera” periods; with checks every 5 s or "
+                   "less often it is switched on for about a second per check."));
         return ui;
     }
 
@@ -186,7 +187,7 @@ int probe(int seconds, const std::string& only) {
         if (!only.empty() && c.id != only) continue;
         dp::Camera cam;
         facet::i18n::Text err;
-        if (!cam.open(c.id, err)) {
+        if (!cam.open(c.id, err) || !cam.start(err)) {
             std::printf("%s: %s\n", c.id.c_str(), english(err).c_str());
             continue;
         }
