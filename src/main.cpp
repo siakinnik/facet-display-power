@@ -77,7 +77,9 @@ public:
     void update() {
         int minute = minute_of_day();
         dp::Mode mode = dp::current_mode(settings_, minute);
-        bool camera_needed = settings_.enabled && mode == dp::Mode::Camera;
+        // The camera permission is optional: without it "Camera" periods keep
+        // the screen on, exactly as when the camera is unavailable.
+        bool camera_needed = settings_.enabled && mode == dp::Mode::Camera && plugin_.has_permission("camera");
         watcher_.configure({camera_needed, settings_.camera, settings_.interval_s, settings_.sensitivity});
 
         dp::WatchStatus st = watcher_.status();
@@ -121,7 +123,11 @@ private:
         ui.section(tr("Now"));
         ui.info(tr("Screen"), tr(d.on ? "on — {}" : "off — {}", {tr(d.reason)}), d.on ? "good" : "dim");
         ui.info(tr("Period"), tr(night ? "night" : "day") + " · " + tr(kModes[size_t(mode)]));
-        if (mode == dp::Mode::Camera && s.enabled) {
+        if (mode == dp::Mode::Camera && s.enabled && !plugin_.has_permission("camera")) {
+            ui.info(tr("Camera"), tr("no permission"), "warn");
+            ui.note(tr("The camera permission is off (Settings > Installed modules), so the screen stays on "
+                       "during “Camera” periods."));
+        } else if (mode == dp::Mode::Camera && s.enabled) {
             if (st.camera_ok) {
                 ui.info(tr("Camera"), st.camera_name, "good");
                 ui.level(tr("Motion"), std::min(1.0, st.motion * 10.0), std::to_string(int(st.motion * 100)) + "%");

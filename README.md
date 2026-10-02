@@ -68,8 +68,9 @@ Run the same command to update. Remove with `… | sudo bash -s -- --remove-plug
 Settings are kept in `/var/lib/facet/data/display-power/settings.json`.
 
 The plugin has no home-screen tile: it is under Settings > Modules > Screen &
-camera. It needs Facet 0.3 (API 2) and asks for two permissions, granted in
-Settings > Apps: `display.power` (switch the screen) and `camera`.
+camera. It needs Facet 0.4 (API 3) and asks for `display.power` (switch the
+screen), `background` and, optionally, `camera`: without the camera
+permission "Camera" periods keep the screen on, as when no camera works.
 
 ## Build from source
 

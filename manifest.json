@@ -1,9 +1,14 @@
 {
   "id": "display-power",
   "name": { "en": "Screen & camera", "ru": "Экран и камера" },
-  "version": "0.1.0-alpha",
-  "api": 2,
+  "version": "0.2.0-alpha",
+  "api": 3,
   "exec": "display-power",
-  "permissions": ["display.power", "camera"],
+  "permissions": [
+    "display.power",
+    "background",
+    { "name": "camera", "optional": true,
+      "reason": { "en": "To notice someone in front of the screen.", "ru": "Чтобы замечать человека перед экраном." } }
+  ],
   "settings": true
 }

@@ -27,6 +27,11 @@ const facet::i18n::Table& ru() {
         {"{} min ago", "{} мин назад"},
         {"{} h ago", "{} ч назад"},
         {"connecting…", "подключение…"},
+        {"no permission", "нет разрешения"},
+        {"The camera permission is off (Settings > Installed modules), so the screen stays on during “Camera” "
+         "periods.",
+         "Разрешение на камеру выключено (Настройки > Установленные модули), поэтому в периоды «По камере» "
+         "экран остаётся включённым."},
         {"Too dark in view: the camera may not see anyone. It needs IR illumination or light.",
          "В кадре слишком темно — камера может не видеть человека. Нужна ИК-подсветка или свет."},
         {"While the camera is unavailable, the screen stays on.",
