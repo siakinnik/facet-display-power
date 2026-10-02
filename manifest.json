@@ -1,9 +1,9 @@
 {
   "id": "display-power",
   "name": { "en": "Screen & camera", "ru": "Экран и камера" },
-  "version": "0.0.2-alpha",
-  "api": 1,
+  "version": "0.1.0-alpha",
+  "api": 2,
   "exec": "display-power",
-  "capabilities": ["display.power", "camera"],
-  "tile": { "icon": "display" }
+  "permissions": ["display.power", "camera"],
+  "settings": true
 }

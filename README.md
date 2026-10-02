@@ -67,6 +67,10 @@ curl -fsSL https://raw.githubusercontent.com/siakinnik/facet-core/main/scripts/g
 Run the same command to update. Remove with `… | sudo bash -s -- --remove-plugin display-power`.
 Settings are kept in `/var/lib/facet/data/display-power/settings.json`.
 
+The plugin has no home-screen tile: it is under Settings > Modules > Screen &
+camera. It needs Facet 0.3 (API 2) and asks for two permissions, granted in
+Settings > Apps: `display.power` (switch the screen) and `camera`.
+
 ## Build from source
 
 ```bash
@@ -106,7 +110,7 @@ src/presence.*     presence detector
 src/camera*        V4L2 discovery and luma capture
 src/watcher.*      camera thread (never blocks the plugin loop)
 src/i18n/          translations
-src/main.cpp       plugin glue: events, settings screen, tile
+src/main.cpp       plugin glue: events, settings screen, tile subtitle
 tools/camview.cpp  dev tool: live camera view on the framebuffer
 tests/             unit tests
 ```

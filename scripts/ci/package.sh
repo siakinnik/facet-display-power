@@ -9,7 +9,10 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 stage="$(mktemp -d)/display-power"
 
 install -Dm755 "$bin" "$stage/display-power"
-install -m644 "$root/manifest.json" "$stage/manifest.json"
+# The manifest written by the build records the SDK version.
+manifest="$(dirname "$bin")/manifest.json"
+[[ -f "$manifest" ]] || manifest="$root/manifest.json"
+install -m644 "$manifest" "$stage/manifest.json"
 for f in LICENSE README.md; do
     [[ -f "$root/$f" ]] && install -m644 "$root/$f" "$stage/$f"
 done
