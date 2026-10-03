@@ -115,3 +115,15 @@ src/main.cpp       plugin glue: events, settings screen, tile subtitle
 tools/camview.cpp  dev tool: live camera view on the framebuffer
 tests/             unit tests
 ```
+
+## Licenses
+
+- This project: GPL-3.0 (LICENSE); its sources are this repository at each
+  release tag.
+- The release executables are static: the C library (glibc, LGPL-2.1-or-later) and the GCC runtime are built into them. Their
+  licenses are in every release archive under `licenses/` (the packages they
+  come from, with exact versions, in `licenses/STATIC`, and the full texts in
+  `licenses/common-licenses/`).
+- Every release has `facet-display-power-<version>-sources.tar` with the sources of all of
+  that. GCC's runtime (libstdc++, libgcc) is under the GCC Runtime
+  Library Exception, which asks for no sources.
